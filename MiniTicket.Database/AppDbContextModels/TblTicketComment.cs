@@ -14,4 +14,6 @@ public partial class TblTicketComment
     public string Message { get; set; } = null!;
 
     public DateTime? CreatedAt { get; set; }
+
+    public string? AuthorRole { get; set; }
 }

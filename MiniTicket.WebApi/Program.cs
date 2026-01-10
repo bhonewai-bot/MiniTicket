@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MiniTicket.Database.AppDbContextModels;
 using MiniTicket.WebApi.Middlewares;
 using MiniTicket.WebApi.Services;
+using MiniTicket.WebApi.Services.TicketComment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<ITicketCommentService, TicketCommentService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

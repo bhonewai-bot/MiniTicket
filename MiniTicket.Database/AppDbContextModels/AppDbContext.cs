@@ -69,6 +69,9 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("Tbl_TicketComment");
 
+            entity.Property(e => e.AuthorRole)
+                .HasMaxLength(20)
+                .IsUnicode(false);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

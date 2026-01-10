@@ -1,3 +1,5 @@
+using MiniTicket.WebApi.Dtos;
+
 namespace MiniTicket.WebApi;
 
 public static class DevCode
@@ -9,6 +11,8 @@ public static class DevCode
         
     public static bool IsAdmin(this HttpContext context)
     {
-        return context.Items["Role"]?.ToString() == "Admin";
+        return context.Items.TryGetValue("Role", out var role) &&
+               role is UserRole r &&
+               r == UserRole.Admin;
     }
 }

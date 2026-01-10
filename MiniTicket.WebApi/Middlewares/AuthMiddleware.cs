@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MiniTicket.Database.AppDbContextModels;
+using MiniTicket.WebApi.Dtos;
 
 namespace MiniTicket.WebApi.Middlewares;
 
@@ -53,8 +54,9 @@ public class AuthMiddleware
                 return;
             }
 
-            context.Items["UserId"] = login.UserId;
-            context.Items["Role"] = user.Role;
+            context.Items[HttpContextKeys.UserId] = login.UserId;
+            context.Items[HttpContextKeys.Role] =
+                Enum.Parse<UserRole>(user.Role);
             
             // Call the next delegate/middleware in the pipeline.
             await _next(context);
@@ -73,6 +75,11 @@ public class AuthMiddleware
         "/api/user/register",
         "/api/user/login",
         "/swagger",
-        "/swagger/index.html"
     };
+    
+    public static class HttpContextKeys
+    {
+        public const string UserId = "UserId";
+        public const string Role = "Role";
+    }
 }
