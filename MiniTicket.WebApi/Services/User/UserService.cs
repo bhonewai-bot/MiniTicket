@@ -43,7 +43,7 @@ public class UserService : IUserService
             {
                 Name = request.Name.Trim(),
                 Email = email,
-                Role = "User",
+                Role = UserRole.Admin.ToString(),
                 CreatedAt = DateTime.UtcNow,
             };
             
@@ -56,7 +56,7 @@ public class UserService : IUserService
             {
                 Name = user.Name,
                 Email = user.Email,
-                Role = user.Role,
+                Role = Enum.Parse<UserRole>(user.Role),
             };
             
             return Result<RegisterUserResponseDto>.Success(registeredUser);

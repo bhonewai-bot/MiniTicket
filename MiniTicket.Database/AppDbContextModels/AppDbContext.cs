@@ -31,11 +31,10 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<TblLogin>(entity =>
         {
-            entity.HasKey(e => e.LoginId).HasName("PK__Tbl_Logi__4DDA2818ECA966F0");
+            entity.HasKey(e => e.LoginId).HasName("PK__Tbl_Logi__4DDA2818E52B0E41");
 
             entity.ToTable("Tbl_Login");
 
-            entity.Property(e => e.LoginId).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

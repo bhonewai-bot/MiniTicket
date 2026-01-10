@@ -11,7 +11,7 @@ public class RegisterUserResponseDto
 {
     public string Name { get; set; }
     public string Email { get; set; }
-    public string Role { get; set; }
+    public UserRole Role { get; set; }
 }
 
 public class LoginUserRequestDto
@@ -31,5 +31,12 @@ public class UserDto
 {
     public string Name { get; set; }
     public string Email { get; set; }
-    public string Role { get; set; }
+    public UserRole Role { get; set; }
+}
+
+public enum UserRole
+{
+    None,
+    Admin,
+    User
 }

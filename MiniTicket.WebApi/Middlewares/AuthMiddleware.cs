@@ -33,19 +33,19 @@ public class AuthMiddleware
 
             var db = context.RequestServices.GetRequiredService<AppDbContext>();
             
-            var session = await db.TblLogins
+            var login = await db.TblLogins
                 .FirstOrDefaultAsync(x => 
                     x.SessionId == sessionId &&
                     x.SessionExpiredAt > DateTime.UtcNow);
 
-            if (session is null)
+            if (login is null)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return;
             }
             
-            var user = await db.TblUsers.FirstOrDefaultAsync(x =>
-                x.UserId == session.UserId);
+            var user = await db.TblUsers
+                .FirstOrDefaultAsync(x => x.UserId == login.UserId);
 
             if (user is null)
             {
@@ -53,7 +53,8 @@ public class AuthMiddleware
                 return;
             }
 
-            context.Items["UserId"] = session.UserId;
+            context.Items["UserId"] = login.UserId;
+            context.Items["Role"] = user.Role;
             
             // Call the next delegate/middleware in the pipeline.
             await _next(context);

@@ -3,28 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using MiniTicket.WebApi.Dtos;
 using MiniTicket.WebApi.Services;
 
-namespace MiniTicket.WebApi.Controllers
+namespace MiniTicket.WebApi.Controllers.Admin
 {
-    [Route("api/[controller]")]
+    [Route("api/admin/Tickets")]
     [ApiController]
-    public class TicketController : ControllerBase
+    public class AdminTicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
 
-        public TicketController(ITicketService ticketService)
+        public AdminTicketController(ITicketService ticketService)
         {
             _ticketService = ticketService;
+        }
+
+        private bool CheckAdmin()
+        {
+            return HttpContext.IsAdmin();
         }
 
         [HttpGet("{pageNo}/{pageSize}")]
         public async Task<IActionResult> GetTickets(int pageNo, int pageSize)
         {
-            if (!HttpContext.Items.TryGetValue("UserId", out var user))
-                return Unauthorized();
+            if (!CheckAdmin())
+                return Forbid();
             
-            int userId = (int)user;
-            
-            var result = await _ticketService.GetTickets(pageNo, pageSize, userId);
+            var result = await _ticketService.GetTickets(pageNo, pageSize);
             
             if (result.IsValidatorError)
                 return BadRequest(result.Message);
@@ -34,16 +37,14 @@ namespace MiniTicket.WebApi.Controllers
             
             return Ok(result.Data);
         }
-
-        [HttpGet("{ticketId}")]
+        
+        [HttpGet]
         public async Task<IActionResult> GetTicket(int ticketId)
         {
-            if (!HttpContext.Items.TryGetValue("UserId", out var user))
-                return Unauthorized();
+            if (!CheckAdmin())
+                return Forbid();
             
-            int userId = (int)user;
-            
-            var result = await _ticketService.GetTicket(ticketId, userId);
+            var result = await _ticketService.GetTicket(ticketId);
             
             if (result.IsValidatorError)
                 return BadRequest(result.Message);
@@ -53,16 +54,14 @@ namespace MiniTicket.WebApi.Controllers
             
             return Ok(result.Data);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateTicket(TicketCreateRequestDto request)
+        
+        [HttpPatch("{ticketId}/status")]
+        public async Task<IActionResult> UpdateTicketStatus(int ticketId, [FromBody] TicketUpdateStatusRequestDto request)
         {
-            if (!HttpContext.Items.TryGetValue("UserId", out var user))
-                return Unauthorized();
-
-            int userId = (int)user;
+            if (!CheckAdmin())
+                return Forbid();
             
-            var result = await _ticketService.CreateTicket(request, userId);
+            var result = await _ticketService.UpdateTicketStatus(ticketId, request);
             
             if (result.IsValidatorError)
                 return BadRequest(result.Message);
